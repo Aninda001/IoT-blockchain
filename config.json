@@ -1,0 +1,8 @@
+{
+  "sigpubiot": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEXD5PO868Q//sZusu5vCvxtudbxWT\naC6zD6vpB1ahmdYSc2W8xqFt6R/W1YPl6i280zXwFHotsvihk2xTbPi5Rw==\n-----END PUBLIC KEY-----\n",
+  "sigpubbase": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEmtmiKj9CEdvoq3+F3dlunoH5/TEm\nLUNo1vtS8kEycYqbExbYBjt+8o72VUQqu4+azReimS+Wq5FtEGF4/BPdUQ==\n-----END PUBLIC KEY-----\n",
+  "staticpubiot": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEXTPDXqg2Nunfkijc9waetGmNK3n4\nlG1Xo2pEBRs6GJaoQL0eJeGF1fdKxC/man6eikr7P124SBkJwkXZ7w3Vkw==\n-----END PUBLIC KEY-----\n",
+  "staticpubbase": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEfGoNFetYmrEqMeKdATOp32PgypAE\nvlS20VErWuuxCSicG9z+5VAMgMIai8wqyZdZxxGG1h/eX6+mtnU3Ud5YLA==\n-----END PUBLIC KEY-----\n",
+  "lastUpdated": "2025-03-26T19:41:25.910Z",
+  "updatedBy": "Aninda001"
+}

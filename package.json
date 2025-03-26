@@ -1,0 +1,21 @@
+{
+    "name": "iot-base-communication-emulator",
+    "version": "1.0.0",
+    "description": "Prototype emulator for IoT-to-Base hybrid encryption protocol",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "start-iot": "node --watch iot-device.js",
+        "start-intermediary": "node --watch intermediary.js",
+        "start-base": "node --watch base-station.js",
+        "start-all": "concurrently \"npm run start-iot\" \"npm run start-intermediary\" \"npm run start-base\""
+    },
+    "dependencies": {
+        "axios": "^1.6.2",
+        "body-parser": "^1.20.2",
+        "chalk": "^4.1.2",
+        "concurrently": "^8.2.2",
+        "express": "^4.18.2",
+        "node-fetch": "^3.3.2"
+    }
+}
