@@ -15,6 +15,7 @@ const rl = readline.createInterface({
     output: process.stdout,
 });
 
+const all_msg = [];
 const salt = "uplink_salt";
 const info = "uplink_key_derivation";
 const { publicKey: staticPublicKey, privateKey: staticPrivateKey } =
@@ -70,6 +71,14 @@ const send_msg = async () => {
     });
 };
 
+const received_msg = () => {
+    console.log("Received messages:");
+    all_msg.forEach((msg, index) => {
+        console.log(`${index + 1}. ${msg}`);
+    });
+    console.log(".....End of messages.....\n");
+};
+
 const main = async () => {
     while (true) {
         let option = await choise();
@@ -122,6 +131,7 @@ app.post("/msg", async (req, res) => {
     const tagBuffer = Buffer.from(body.tag, "base64");
     const msg = aesGcmDecrypt(aes_key, nonce, ciphertextBuffer, tagBuffer);
     console.log("\n", msg.toString("utf-8"));
+    all_msg.push(msg.toString("utf-8"));
     res.status(200).send("200 Ok");
 });
 
