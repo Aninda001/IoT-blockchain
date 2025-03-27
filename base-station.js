@@ -4,6 +4,7 @@ import {
     EC_key_pair,
     deriveSharedSecret,
     deriveAESKeyAndNonce,
+    aesGcmEncrypt,
     aesGcmDecrypt,
 } from "./crypto_utils.js";
 import config from "./config.js";
@@ -17,8 +18,6 @@ const rl = readline.createInterface({
 const salt = "uplink_salt";
 const info = "uplink_key_derivation";
 const { privateKey: staticPrivateKey, publicKey: staticPublicKey } =
-    await EC_key_pair();
-const { privateKey: ephemeralPrivateKey, publicKey: ephemeralPublicKey } =
     await EC_key_pair();
 const { privateKey: SigPrivateKey, publicKey: SigPublicKey } =
     await EC_key_pair();
@@ -41,10 +40,33 @@ const choise = async () => {
 const send_msg = async () => {
     let msg = await getChoice("Enter a message: ");
     console.log(`You entered: ${msg}`);
+
+    const { privateKey: ephemeralPrivateKey, publicKey: ephemeralPublicKey } =
+        await EC_key_pair();
+    config.reload();
+    let sharedSecret = await deriveSharedSecret(
+        ephemeralPrivateKey,
+        config.staticpubiot,
+    );
+    // After deriving the shared secret
+    console.log("SHARED SECRET:", sharedSecret.toString("hex"));
+    const { aesKey: aes_key, nonce } = deriveAESKeyAndNonce(
+        sharedSecret,
+        salt,
+        info,
+    );
+    console.log(aes_key, nonce);
+    const { ciphertext, tag } = aesGcmEncrypt(aes_key, nonce, msg);
+    const payload = {
+        ephemeralPublicKey: ephemeralPublicKey.toString("base64"),
+        ciphertext: ciphertext.toString("base64"),
+        tag: tag.toString("base64"),
+    };
+    console.log(payload);
     await fetch("http://localhost:10000/iot", {
         method: "POST",
-        headers: { "Content-Type": "text/plain" },
-        body: msg,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
     });
 };
 

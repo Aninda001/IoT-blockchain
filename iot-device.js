@@ -5,6 +5,7 @@ import {
     deriveSharedSecret,
     deriveAESKeyAndNonce,
     aesGcmEncrypt,
+    aesGcmDecrypt,
 } from "./crypto_utils.js";
 import config from "./config.js";
 
@@ -96,14 +97,31 @@ const app = express();
 const port = 9999;
 
 // Parse text body
-app.use(express.text());
+app.use(express.json());
 
 app.get("/", (req, res) => {
     res.send("OK");
 });
 
-app.post("/msg", (req, res) => {
-    console.log("\n", req.body);
+app.post("/msg", async (req, res) => {
+    const body = req.body;
+    console.log(body);
+    const sharedSecret = await deriveSharedSecret(
+        staticPrivateKey,
+        body.ephemeralPublicKey,
+    );
+    // After deriving the shared secret
+    console.log("SHARED SECRET:", sharedSecret.toString("hex"));
+    const { aesKey: aes_key, nonce } = deriveAESKeyAndNonce(
+        sharedSecret,
+        salt,
+        info,
+    );
+    console.log(aes_key, nonce);
+    const ciphertextBuffer = Buffer.from(body.ciphertext, "base64");
+    const tagBuffer = Buffer.from(body.tag, "base64");
+    const msg = aesGcmDecrypt(aes_key, nonce, ciphertextBuffer, tagBuffer);
+    console.log("\n", msg.toString("utf-8"));
     res.status(200).send("200 Ok");
 });
 

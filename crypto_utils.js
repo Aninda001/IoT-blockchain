@@ -30,7 +30,6 @@ export const deriveSharedSecret = async (
     const privateKeyDer = pemToDer(privateKeyPem, true);
     const theirPublicKeyDer = pemToDer(theirPublicKeyPem, false);
 
-    console.log("Public Key:", theirPublicKeyPem);
     // Import private key
     const privateKey = await crypto.subtle.importKey(
         "pkcs8",

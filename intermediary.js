@@ -32,12 +32,12 @@ app.post("/base", async (req, res) => {
 app.post("/iot", async (req, res) => {
     try {
         const body = req.body;
+        console.log(body);
         await fetch("http://localhost:9999/msg", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body,
+            body: JSON.stringify(body),
         });
-        console.log(body);
         res.status(200).send("200 Ok");
     } catch (error) {
         console.error("Error in /iot:", error);
