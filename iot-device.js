@@ -6,6 +6,8 @@ import {
     deriveAESKeyAndNonce,
     aesGcmEncrypt,
     aesGcmDecrypt,
+    signData,
+    verifySignature,
 } from "./crypto_utils.js";
 import config from "./config.js";
 
@@ -58,10 +60,13 @@ const send_msg = async () => {
     );
     console.log(aes_key, nonce);
     const { ciphertext, tag } = aesGcmEncrypt(aes_key, nonce, msg);
+    const dataToSign = Buffer.concat([ciphertext, tag]);
+    const signature = signData(SigPrivateKey, dataToSign);
     const payload = {
         ephemeralPublicKey: ephemeralPublicKey.toString("base64"),
         ciphertext: ciphertext.toString("base64"),
         tag: tag.toString("base64"),
+        sign: signature.toString("base64"),
     };
     console.log(payload);
     await fetch("http://localhost:10000/base", {
@@ -119,6 +124,24 @@ app.post("/msg", async (req, res) => {
         staticPrivateKey,
         body.ephemeralPublicKey,
     );
+    config.reload();
+    const dataToSign = Buffer.concat([
+        Buffer.from(body.ciphertext, "base64"),
+        Buffer.from(body.tag, "base64"),
+    ]);
+    const isValid = verifySignature(
+        config.sigpubbase,
+        dataToSign,
+        Buffer.from(body.sign, "base64"),
+    );
+    if (!isValid) {
+        console.log("Invalid Signature");
+        res.status(400).send("400 Bad Request");
+        return;
+    } else {
+        console.log("Signature is valid");
+    }
+
     // After deriving the shared secret
     console.log("SHARED SECRET:", sharedSecret.toString("hex"));
     const { aesKey: aes_key, nonce } = deriveAESKeyAndNonce(

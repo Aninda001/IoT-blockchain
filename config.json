@@ -1,8 +1,8 @@
 {
-  "sigpubiot": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEvXzzQCao/GTINLaB9uKt+8Flh3Ik\n+rTQbMmNdoVMox3mSQcKcrW39AKI9T0wisSuYvUnXd3V7R20XzXlY79T0g==\n-----END PUBLIC KEY-----\n",
-  "sigpubbase": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEq4cZvxepZsSjXQXBrtrU6Y3bn4xh\nTOhq6nudEWypVCBl+RpvJs/eIUw389y9h7ELQNUqmoeTcyzS7BH0GxE/uA==\n-----END PUBLIC KEY-----\n",
-  "staticpubiot": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEorQEU1Fztl8aY3Prhf24McSxdVKC\n1e7zLGErHwfft2Cb4721dTntbhMnh8TBmeRE7WkjMrtaGPQXyI8uvYEw1Q==\n-----END PUBLIC KEY-----\n",
-  "staticpubbase": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEodnGGPouiBGswl9I3AFFb+x+xNhX\nu/BB5GqrWOHrtF3ZbgG12JtHCL8eO7Uf1kLG+g2bEFRDxkaycyW1ffoZLw==\n-----END PUBLIC KEY-----\n",
-  "lastUpdated": "2025-03-27T05:44:21.221Z",
+  "sigpubiot": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAElfE0qtyClH4/snRi/UgjwoGHmR9c\nULl+/PhLOfkvJbTjbKvLKuG7deRCjjhD2VsRovIIto2JVMkbWGRjcXS46g==\n-----END PUBLIC KEY-----\n",
+  "sigpubbase": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE8gHEVReY3NJNvwB7D8zXGd8p3Rgz\nVWaMmdp/hetanW/SrrVpobNu6bCvKpi2OQcgLZi2OKj10MWmhjFf/N61KA==\n-----END PUBLIC KEY-----\n",
+  "staticpubiot": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAETUR8mmHClHBX+Qk32/NqGHT+A2SF\nhVm/xaiFtPi0BR/Z+XFefztl0/4TcE9D568CR3ybmytqFhIng2A8WNfHfQ==\n-----END PUBLIC KEY-----\n",
+  "staticpubbase": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEjMZHHR5f37qltmHiIEABgkH1X/Q8\nnaXCeEknXAzAzXw86OEJ55RkXdQQdTArmVxWQthDp2GgN1UlRHDgZxpwFQ==\n-----END PUBLIC KEY-----\n",
+  "lastUpdated": "2025-03-27T07:12:21.060Z",
   "updatedBy": "Aninda001"
 }

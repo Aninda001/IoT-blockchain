@@ -111,3 +111,17 @@ export function aesGcmDecrypt(aesKey, nonce, ciphertext, tag) {
     plaintext = Buffer.concat([plaintext, decipher.final()]);
     return plaintext;
 }
+
+// Sign data using ECDSA (DER format signature)
+export function signData(privateKeyPem, dataToSign) {
+    const signer = crypto.createSign("SHA256");
+    signer.update(dataToSign);
+    return signer.sign(privateKeyPem); // Returns DER-formatted signature buffer
+}
+
+// Verify ECDSA signature
+export function verifySignature(publicKeyPem, dataToVerify, signature) {
+    const verifier = crypto.createVerify("SHA256");
+    verifier.update(dataToVerify);
+    return verifier.verify(publicKeyPem, signature); // Returns boolean
+}
