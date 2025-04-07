@@ -95,7 +95,7 @@ HMAC-based Extract-and-Expand Key Derivation Function (HKDF):
 
 ### Uplink (IoT → Base)
 
-![Uplink (IoT → Base)](./diagrams/Uplink (IoT → Base)2.drawio.svg)
+![Uplink (IoT → Base)](./diagrams/Uplink%20(IoT%20→%20Base)2.drawio.svg)
 
 1. **IoT Device Side**:
    - Generate ephemeral ECDH key pair (`ephemeralPrivateKey`, `ephemeralPublicKey`)
@@ -126,7 +126,7 @@ const signature = signData(SigPrivateKeyIoT, Buffer.concat([ciphertext, tag]));
 
 ### Downlink (Base → IoT)
 
-![Downlink (Base → IoT)](./diagrams/Downlink (Base → IoT).drawio.svg)
+![Downlink (Base → IoT)](./diagrams/Downlink%20(Base%20→%20IoT).drawio.svg)
 
 1. **Base Station Side**:
    - Generate ephemeral ECDH key pair (`ephemeralPrivateKey`, `ephemeralPublicKey`)
@@ -192,7 +192,7 @@ The emulator uses a three-node architecture:
 
 ### Data Flow
 
-![Data Flow](./diagrams/Data Flow.drawio.svg)
+![Data Flow](./diagrams/Data%20Flow.drawio.svg)
 
 The protocol implementation follows the standard sequence:
 
