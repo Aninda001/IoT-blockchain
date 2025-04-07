@@ -95,28 +95,7 @@ HMAC-based Extract-and-Expand Key Derivation Function (HKDF):
 
 ### Uplink (IoT → Base)
 
-```
-┌───────────────┐                 ┌─────────────┐                ┌─────────────────┐
-│   IoT Device  │                 │ Intermediary│                │   Base Station  │
-└───────┬───────┘                 └──────┬──────┘                └────────┬────────┘
-        │                                │                                │
-        │ 1. Generate ephemeral ECDH pair│                                │
-        │ 2. Compute shared secret       │                                │
-        │ 3. Derive AES key & nonce      │                                │
-        │ 4. Encrypt message             │                                │
-        │ 5. Sign ciphertext + tag       │                                │
-        │                                │                                │
-        │      Encrypted Payload         │                                │
-        │ ───────────────────────────────►                                │
-        │                                │       Encrypted Payload        │
-        │                                │ ───────────────────────────────►
-        │                                │                                │
-        │                                │                                │ 6. Verify signature
-        │                                │                                │ 7. Compute shared secret
-        │                                │                                │ 8. Derive AES key & nonce
-        │                                │                                │ 9. Decrypt message
-        │                                │                                │
-```
+![Uplink (IoT → Base)](./diagrams/Uplink (IoT → Base)2.drawio.svg)
 
 1. **IoT Device Side**:
    - Generate ephemeral ECDH key pair (`ephemeralPrivateKey`, `ephemeralPublicKey`)
@@ -147,28 +126,7 @@ const signature = signData(SigPrivateKeyIoT, Buffer.concat([ciphertext, tag]));
 
 ### Downlink (Base → IoT)
 
-```
-┌───────────────┐                 ┌─────────────┐                ┌─────────────────┐
-│   IoT Device  │                 │ Intermediary│                │   Base Station  │
-└───────┬───────┘                 └──────┬──────┘                └────────┬────────┘
-        │                                │                                │
-        │                                │                                │ 1. Generate ephemeral ECDH pair
-        │                                │                                │ 2. Compute shared secret
-        │                                │                                │ 3. Derive AES key & nonce
-        │                                │                                │ 4. Encrypt message
-        │                                │                                │ 5. Sign ciphertext + tag
-        │                                │                                │
-        │                                │      Encrypted Payload         │
-        │                                │◄────────────────────────────────
-        │      Encrypted Payload         │                                │
-        │◄────────────────────────────────                                │
-        │                                │                                │
-        │ 6. Verify signature            │                                │
-        │ 7. Compute shared secret       │                                │
-        │ 8. Derive AES key & nonce      │                                │
-        │ 9. Decrypt message             │                                │
-        │                                │                                │
-```
+![Downlink (Base → IoT)](./diagrams/Downlink (Base → IoT).drawio.svg)
 
 1. **Base Station Side**:
    - Generate ephemeral ECDH key pair (`ephemeralPrivateKey`, `ephemeralPublicKey`)
@@ -215,33 +173,7 @@ This repository contains a Node.js-based emulator demonstrating the complete pro
 
 ### Architecture
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│                      IoT-to-Base Architecture                     │
-└──────────────────────────────────────────────────────────────────┘
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│   IoT Device    │     │   Intermediary  │     │   Base Station  │
-│    (Port 9999)  │     │   (Port 10000)  │     │   (Port 10001)  │
-└────────┬────────┘     └────────┬────────┘     └────────┬────────┘
-         │                       │                       │
-         │  POST /base           │                       │
-         ├───────────────────────►                       │
-         │                       │  POST /msg            │
-         │                       ├───────────────────────►
-         │                       │                       │
-         │                       │  POST /iot            │
-         │                       ◄───────────────────────┤
-         │  POST /msg            │                       │
-         ◄───────────────────────┤                       │
-         │                                               │
-┌────────┴────────┐                             ┌────────┴────────┐
-│  crypto_utils   │                             │  crypto_utils   │
-│   - ECDH        │                             │   - ECDH        │
-│   - ECDSA       │                             │   - ECDSA       │
-│   - AES-GCM     │                             │   - AES-GCM     │
-│   - HKDF        │                             │   - HKDF        │
-└─────────────────┘                             └─────────────────┘
-```
+![Architecture](./diagrams/Architecture.drawio.svg)
 
 The emulator uses a three-node architecture:
 - **IoT Device**: Simulated on port 9999
@@ -260,50 +192,7 @@ The emulator uses a three-node architecture:
 
 ### Data Flow
 
-```
-┌───────────────────────────────────────────────────────────────────────────┐
-│                         Protocol Data Flow                                 │
-└───────────────────────────────────────────────────────────────────────────┘
-
-┌───────────────┐                                       ┌───────────────┐
-│   Sender      │                                       │   Receiver    │
-│ (IoT or Base) │                                       │ (Base or IoT) │
-└───────┬───────┘                                       └───────┬───────┘
-        │                                                       │
-        │  1. Generate ephemeral EC key pair                    │
-        │     - privateKey, publicKey                           │
-        │                                                       │
-        │  2. Compute shared secret                             │
-        │     - ECDH(ephPriv, staticPubReceiver)                │
-        │                                                       │
-        │  3. Derive AES key and nonce                          │
-        │     - HKDF(shared_secret, salt, info)                 │
-        │                                                       │
-        │  4. Encrypt message                                   │
-        │     - AES-GCM(aes_key, nonce, plaintext)              │
-        │                                                       │
-        │  5. Sign the ciphertext + tag                         │
-        │     - ECDSA-Sign(sigPriv, ciphertext+tag)             │
-        │                                                       │
-        │                   DATA TRANSMISSION                   │
-        │                                                       │
-        │        ┌───────────────────────────────────┐          │
-        └───────►│ ephPub | ciphertext | tag | sign  ├─────────►│
-                 └───────────────────────────────────┘          │
-                                                                │
-                                                                │ 6. Verify signature
-                                                                │    - ECDSA-Verify(sigPubSender, ciphertext+tag, sign)
-                                                                │
-                                                                │ 7. Compute shared secret
-                                                                │    - ECDH(staticPrivReceiver, ephPubSender)
-                                                                │
-                                                                │ 8. Derive AES key and nonce
-                                                                │    - HKDF(shared_secret, salt, info)
-                                                                │
-                                                                │ 9. Decrypt message
-                                                                │    - AES-GCM-Decrypt(aes_key, nonce, ciphertext, tag)
-                                                                │
-```
+![Data Flow](./diagrams/Data Flow.drawio.svg)
 
 The protocol implementation follows the standard sequence:
 
