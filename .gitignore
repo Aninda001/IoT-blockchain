@@ -36,3 +36,7 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 .webui_secret_key
 config.json
+
+artifacts
+cache
+ignition/deployments

@@ -11,6 +11,8 @@ import {
 } from "./crypto_utils.js";
 import config from "./config.js";
 
+import { calculateMessageHash, signEthereumMessageHash } from "./blockchain_utils.js";
+
 // Create readline interface
 const rl = readline.createInterface({
     input: process.stdin,
@@ -153,9 +155,38 @@ app.post("/msg", async (req, res) => {
     const ciphertextBuffer = Buffer.from(body.ciphertext, "base64");
     const tagBuffer = Buffer.from(body.tag, "base64");
     const msg = aesGcmDecrypt(aes_key, nonce, ciphertextBuffer, tagBuffer);
-    console.log("\n", msg.toString("utf-8"));
-    all_msg.push(msg.toString("utf-8"));
-    res.status(200).send("200 Ok");
+    let decryptedMsg = msg.toString("utf-8");
+    console.log("\n", decryptedMsg);
+    all_msg.push(decryptedMsg);
+    res.status(200).send("200 Ok"); 
+
+    // 2. Blockchain ACK Generation (AFTER successful processing)
+    try {
+        const messageHash = calculateMessageHash(decryptedMsg); // Hash the *plaintext* command
+        console.log(`Signing ACK for hash: ${messageHash}`);
+
+        const ackSignature = await signEthereumMessageHash(
+            config.IOT_DEVICE_ETH_PRIVATE_KEY, // Use IoT ETH key
+            messageHash
+        );
+
+         if (!ackSignature) {
+             console.error("Failed to generate ACK signature (check ETH key config).");
+             return; // Don't proceed if signing failed
+        }
+        console.log(`Generated ACK signature: ${ackSignature}`);
+
+        // 3. Send Hash and Signature back to Intermediary for Reward Claim
+        await fetch("http://localhost:10000/ack", { // Send to intermediary's /ack endpoint
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ messageHash, signature: ackSignature }), // Send hash + sig
+        });
+        console.log(`Acknowledgement (hash+sig) sent to intermediary for hash: ${messageHash}`);
+
+    } catch (error) {
+        console.error("Blockchain ACK generation/sending process failed:", error);
+    }
 });
 
 app.listen(port, () => {

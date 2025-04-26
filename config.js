@@ -3,6 +3,9 @@ import { readFileSync } from "fs";
 import { writeFile } from "fs/promises"; // Correctly import from fs/promises
 import * as path from "path";
 import { fileURLToPath } from "url";
+import dotenv from 'dotenv'; // Use dotenv for keys
+
+dotenv.config(); // Load .env file
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,18 +17,46 @@ const DEFAULT_CONFIG = {
     sigpubbase: "",
     staticpubiot: "",
     staticpubbase: "",
+
+    BASE_STATION_ETH_ADDRESS: process.env.BASE_STATION_ETH_ADDRESS || "YOUR_BASE_STATION_ETH_ADDRESS",
+    IOT_DEVICE_ETH_ADDRESS: process.env.IOT_DEVICE_ETH_ADDRESS || "YOUR_IOT_DEVICE_ETH_ADDRESS",
+    // Private keys needed for signing ACKs
+    BASE_STATION_ETH_PRIVATE_KEY: process.env.BASE_STATION_ETH_PRIVATE_KEY || "YOUR_BASE_STATION_ETH_PK",
+    IOT_DEVICE_ETH_PRIVATE_KEY: process.env.IOT_DEVICE_ETH_PRIVATE_KEY || "YOUR_IOT_DEVICE_ETH_PK",
+    // Intermediary needs key to call claimReward
+    INTERMEDIARY_ETH_PRIVATE_KEY: process.env.INTERMEDIARY_ETH_PRIVATE_KEY || "YOUR_INTERMEDIARY_ETH_PK",
+    // Contract info
+    MESSAGE_REWARD_SIMPLE_CONTRACT_ADDRESS: process.env.MESSAGE_REWARD_SIMPLE_CONTRACT_ADDRESS || "YOUR_DEPLOYED_CONTRACT_ADDRESS",
+    RPC_URL: process.env.RPC_URL || "http://127.0.0.1:8545", // Default to local Hardhat node
+
     lastUpdated: new Date().toISOString(),
     updatedBy: "Aninda001",
 };
 
-// Queue for saving operations
-let saveQueue = Promise.resolve();
+const current_Blockchain_Config = () => {
+    return {
+        BASE_STATION_ETH_ADDRESS: process.env.BASE_STATION_ETH_ADDRESS || "YOUR_BASE_STATION_ETH_ADDRESS",
+        IOT_DEVICE_ETH_ADDRESS: process.env.IOT_DEVICE_ETH_ADDRESS || "YOUR_IOT_DEVICE_ETH_ADDRESS",
+        // Private keys needed for signing ACKs
+        BASE_STATION_ETH_PRIVATE_KEY: process.env.BASE_STATION_ETH_PRIVATE_KEY || "YOUR_BASE_STATION_ETH_PK",
+        IOT_DEVICE_ETH_PRIVATE_KEY: process.env.IOT_DEVICE_ETH_PRIVATE_KEY || "YOUR_IOT_DEVICE_ETH_PK",
+        // Intermediary needs key to call claimReward
+        INTERMEDIARY_ETH_PRIVATE_KEY: process.env.INTERMEDIARY_ETH_PRIVATE_KEY || "YOUR_INTERMEDIARY_ETH_PK",
+        // Contract info
+        MESSAGE_REWARD_SIMPLE_CONTRACT_ADDRESS: process.env.MESSAGE_REWARD_SIMPLE_CONTRACT_ADDRESS || "YOUR_DEPLOYED_CONTRACT_ADDRESS",
+        RPC_URL: process.env.RPC_URL || "http://127.0.0.1:8545", // Default to local Hardhat node
+
+
+    };
+}
+
 
 // Try to load config synchronously at startup
 function loadConfigSync() {
+    let blockchainConfig = current_Blockchain_Config();
     try {
         const data = readFileSync(CONFIG_FILE, "utf8");
-        return { ...DEFAULT_CONFIG, ...JSON.parse(data) };
+        return { ...DEFAULT_CONFIG, ...JSON.parse(data), ...blockchainConfig };
     } catch (error) {
         // If file doesn't exist, create it with defaults
         if (error.code === "ENOENT") {
@@ -49,9 +80,10 @@ function loadConfigSync() {
 
 // Add this function
 function reloadConfig() {
+    let blockchainConfig = current_Blockchain_Config();
     try {
         const data = readFileSync(CONFIG_FILE, "utf8");
-        configData = { ...DEFAULT_CONFIG, ...JSON.parse(data) };
+        configData = { ...DEFAULT_CONFIG, ...JSON.parse(data), ...blockchainConfig };
         console.log("Config reloaded from disk");
         return true;
     } catch (error) {
@@ -63,6 +95,8 @@ function reloadConfig() {
 // Load config at startup
 let configData = loadConfigSync();
 
+// Queue for saving operations
+let saveQueue = Promise.resolve();
 // Save config to file (asynchronously)
 function saveConfig() {
     // Queue the save operation to prevent race conditions
@@ -117,3 +151,13 @@ const config = new Proxy(
 );
 
 export default config;
+
+
+// export const BLOCKCHAIN_CONFIG_SIMPLE = {
+//     RPC_URL: configData.RPC_URL,
+//     CONTRACT_ADDRESS: configData.MESSAGE_REWARD_SIMPLE_CONTRACT_ADDRESS,
+//     BASE_STATION_ETH_PRIVATE_KEY: configData.BASE_STATION_ETH_PRIVATE_KEY,
+//     IOT_DEVICE_ETH_PRIVATE_KEY: configData.IOT_DEVICE_ETH_PRIVATE_KEY,
+//     INTERMEDIARY_ETH_PRIVATE_KEY: configData.INTERMEDIARY_ETH_PRIVATE_KEY,
+// };
+
