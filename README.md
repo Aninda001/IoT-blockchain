@@ -333,7 +333,7 @@ This project uses Hardhat Ignition with a deployment script that handles both de
 3.  **Monitor Output:** Watch the terminal output carefully. You should see:
     *   Logs indicating the start of the deployment.
     *   The parameters being used (Base Station address, IoT address, reward amount).
-    *   Confirmation that the `MessageRewardSimple` contract deployment transaction was sent and confirmed.
+    *   Confirmation that the `MessageReward` contract deployment transaction was sent and confirmed.
     *   The **deployed contract address** printed to the console. **COPY THIS ADDRESS!**
     *   Logs indicating the start of the automatic funding process.
     *   Details of the funding transaction (from Base Station address, amount).
@@ -426,7 +426,7 @@ Once all components are running, you can:
     *   Check if the hash being claimed has already been claimed (`rewardContract.claimedHashes(hashToCheck)` in console).
     *   Ensure the addresses configured in the contract match the addresses generating signatures.
 *   **Compilation Errors:** Check `pragma` versions, contract syntax, or run `npx hardhat clean` and `npm install` again.
-*   **Network Connection Errors:** Ensure Ganache is running and the `GANACHE_RPC_URL` in `.env` matches Ganache's RPC server address (usually `http://127.0.0.1:7545` for Quickstart).
+*   **Network Connection Errors:** Ensure Ganache is running and the `RPC_URL` in `.env` matches Ganache's RPC server address (usually `http://127.0.0.1:7545` for Quickstart).
 
 ## API Reference
 
