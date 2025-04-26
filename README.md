@@ -3,10 +3,6 @@
 
 A secure communication protocol implementation for IoT devices, combining the strengths of asymmetric and symmetric cryptography to provide robust end-to-end encryption with forward secrecy, mutual authentication, and data integrity.
 
-**Project Information:**
-- **Last Updated:** 2025-04-07 05:11:40 UTC
-- **Maintainer:** [Aninda001](https://github.com/Aninda001)
-
 ## Table of Contents
 
 1. [Overview](#overview)
